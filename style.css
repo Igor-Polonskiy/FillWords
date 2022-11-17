@@ -1,0 +1,19 @@
+.cell{
+    width: 50px;
+    height: 50px;
+    border: 1px solid grey;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+}
+.field{
+    display: flex;
+    flex-wrap: wrap;
+    user-select: none;
+
+}
+.color{
+    background-color: aqua;
+}
