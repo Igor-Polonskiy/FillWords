@@ -23,6 +23,11 @@ const data = [
 ]
 let gameWrapper = document.querySelector('.root')
 let gameField = document.querySelector('.field')
+let reloadBtn = document.querySelector('.reloadTask')
+let checkTask = document.querySelector('.checkTask')
+let chek_answer = document.querySelector('.chek_answer')
+
+const minSize = 0
 
 const size = 5;
 let isMousedown = false
@@ -40,9 +45,22 @@ function fillField() {
         gameField.append(cell)
     }
 }
+
+/*function setMinsize() {
+    let count = 0
+    data.forEach(item => {
+        count += item.word.length
+    })
+
+    count = Math.ceil(Math.sqrt(count))
+    console.log(count)
+}
+setMinsize()*/
+
 fillField()
 let cells = document.querySelectorAll('.cell')
 lettersFill()
+
 function lettersFill() {
     data.forEach(item => {
         let letters = item.word.split('')
@@ -57,60 +75,105 @@ function lettersFill() {
 
 
 gameField.addEventListener('pointerdown', onPointerdown)
+reloadBtn.addEventListener('click', onReloadBtnClick)
+
+function onReloadBtnClick(){
+    reloadBtn.style.display = 'none'
+    checkTask.classList.remove('chek_answer_rightChoice_color')
+    chek_answer.innerText = ''
+    cells.forEach(item=>{
+        item.classList.remove('color', 'buzy')
+        item.style.backgroundColor = ''
+    })
+}
 
 function onPointerdown(e) {
     if (!e.target.classList.contains('buzy')) {
+        let color = '#' + (Math.random().toString(16) + '000000').substring(2, 8).toUpperCase()
+
         let word = []
         if (e.target.classList.contains('cell')) {
             isMousedown = true
             currentCell = (e.target)
             currentCell.classList.add('color')
             word.push(currentCell.id)
-            //currentCell.addEventListener('pointerleav', onPointerleave)
         }
 
         gameField.addEventListener('pointermove', onMousemove)
         gameField.addEventListener('pointerup', onMouseup)
         gameField.addEventListener('pointerleave', onMouseleave)
 
+        let elemBelow
         function onMousemove(e) {
-            if (e.target.classList.contains('cell')) {
-                if (currentCell !== e.target) {
-                    currentCell = (e.target)
-                    currentCell.classList.add('color')
-                    word.push(currentCell.id)
-
+            elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+            if (elemBelow.classList.contains('cell')) {
+                if (currentCell !== elemBelow) {
+                    if (elemBelow.id !== word.find(el => el === elemBelow.id) && !elemBelow.classList.contains('buzy')) {
+                        currentCell = elemBelow
+                        currentCell.classList.add('color')
+                        word.push(currentCell.id)
+                    }
+                    else if (elemBelow.id === word[word.length - 2]) {
+                        console.log(elemBelow.id)
+                        currentCell.classList.remove('color')
+                        word.pop()
+                        currentCell = (elemBelow)
+                    } else {
+                        onMouseup()
+                    }
                 }
             }
-            
         }
 
         function onMouseup() {
-            let count=0
+            console.log('mouseup')
+            let count = 0
             isMousedown = false
             gameField.removeEventListener('pointermove', onMousemove)
             console.log(word)
             data.forEach(item => {
                 if (item.path.join('') === word.join('')) {
-                    word.forEach((it, ind) => {
+
+                    word.forEach((it) => {
                         cells[it - 1].classList.add('buzy')
+                        cells[it - 1].style.backgroundColor = color
                         console.log(cells[it - 1])
                         count++
                     })
                 }
             })
-            if(!count){
+            if (!count) {
                 word.forEach((it) => {
                     cells[it - 1].classList.remove('color')
                 })
-                word=[]
+                word = []
             }
+            gameField.removeEventListener('pointerup', onMouseup)
+            gameField.removeEventListener('pointerleave', onMouseleave)
+
+            let coutBuzy = 0
+            cells.forEach(item => {
+                if (item.classList.contains('buzy')) {
+                    coutBuzy++
+                }
+            })
+
+            if (coutBuzy === cells.length) {
+                reloadBtn.style.display = 'flex'
+                checkTask.classList.add('chek_answer_rightChoice_color')
+                chek_answer.innerText = 'Молодец!'
+            }
+
         }
+
+        function onMouseleave(e) {
+            console.log('leave')
+
+            onMouseup()
+            gameField.removeEventListener('pointerup', onMouseup)
+            gameField.removeEventListener('pointerleave', onMouseleave)
+        }
+
+
     }
-    function onMouseleave(){
-        onMouseup()
-    }
-
-
-
 }
