@@ -36,9 +36,52 @@ import {
 
     renderFillword(taskId, data, size)
 
+})();
+
+(() => {
+    //уникальный Id тренажера
+    const taskId = 'task-2'
+    //size - количество клеток поля по горизонтали и вертикали
+    const size = 8;
+
+    const data = [
+        {
+            word: 'король',
+            path: [19, 20, 21, 29, 30, 38]
+        },
+        {
+            word: 'ладья',
+            path: [4, 5, 6, 14, 15]
+        },
+        {
+            word: 'ферзь',
+            path: [57, 58, 50, 42, 43]
+        },
+        {
+            word: 'пешка',
+            path: [25, 17, 9, 1, 2]
+        },
+        {
+            word: 'конь',
+            path: [55, 56, 48, 40]
+        },
+        {
+            word: 'слон',
+            path: [51, 59, 60, 52]
+        },
+    ]
+
+    const lettersData = {
+        letters:'яъжьхтжуупйюрнжияаефуйрыртцлцтчкэыф',
+        path: [3,7,8,10,11,12,13,16,18,22,23,24,26,27,28,31,32,33,34,35,36,37,39,41,44,45,46,47,49,53,54,61,62,63,64]
+    }
+    
+
+    renderFillword(taskId, data, size, lettersData)
+
 })()
 
-function renderFillword(taskId, data,size) {
+function renderFillword(taskId, data,size, lettersData) {
     const taskWrapper = document.querySelector(`#${taskId}`);
     
     const gameField = taskWrapper.querySelector('.fillword_field')
@@ -46,6 +89,7 @@ function renderFillword(taskId, data,size) {
     const fieldSize = 50 * size
     let isMousedown = false
     let currentCell = null
+    const alphabet =  "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
     gameField.style.width = `${fieldSize}px`
 
@@ -60,7 +104,7 @@ function renderFillword(taskId, data,size) {
     setMinsize()*/
 
     fillField()
-    let cells = document.querySelectorAll('.fillword_cell')
+    let cells = taskWrapper.querySelectorAll('.fillword_cell')
 
     lettersFill()
 
@@ -81,6 +125,12 @@ function renderFillword(taskId, data,size) {
             })
 
         })
+        if(lettersData){
+            let lettersArr = lettersData.letters.split('')
+            lettersArr.forEach((letter, index) => {
+                cells[lettersData.path[index] - 1].append(letter.toUpperCase())
+            })
+        }
     }
 
     function fillField() {
@@ -166,8 +216,11 @@ function renderFillword(taskId, data,size) {
                         coutBuzy++
                     }
                 })
-
-                if (coutBuzy === cells.length) {
+                let letters = 0
+                data.forEach(item => {
+                    letters += item.word.length
+                })
+                if (coutBuzy === letters) {
                     checkingAnswerPositive(controlsBox, infoBox)
                 }
 
