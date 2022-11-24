@@ -15,27 +15,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 30px;
+  font-size: 35px;
   touch-action: none;
   color: #fff;
   font-family: Arial;
-  text-shadow: 
-		-0   -1px 0   #000000,
-		 0   -1px 0   #000000,
-		-0    1px 0   #000000,
-		 0    1px 0   #000000,
-		-1px -0   0   #000000,
-		 1px -0   0   #000000,
-		-1px  0   0   #000000,
-		 1px  0   0   #000000,
-		-1px -1px 0   #000000,
-		 1px -1px 0   #000000,
-		-1px  1px 0   #000000,
-		 1px  1px 0   #000000,
-		-1px -1px 0   #000000,
-		 1px -1px 0   #000000,
-		-1px  1px 0   #000000,
-		 1px  1px 0   #000000;
+  font-weight: 600;
+  -webkit-text-stroke: 1.2px #434343;
 }
 
 .fillword_field {
